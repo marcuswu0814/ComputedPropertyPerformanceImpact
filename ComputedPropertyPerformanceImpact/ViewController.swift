@@ -209,9 +209,10 @@ struct Feature: Reducer {
         
         @BindingState var b = 0
         
-        var aPlusB: Int {
-            print("🥸 Computed")
-            return a + b
+        var aPlusB = 0
+        
+        mutating func caculate() {
+            aPlusB = a + b
         }
         
     }
@@ -234,6 +235,20 @@ struct Feature: Reducer {
     
     var body: some Reducer<State, Action> {
         BindingReducer()
+            .onChange(of: \.a) { _, _ in
+                Reduce { state, action in
+                    state.caculate()
+                    
+                    return .none
+                }
+            }
+            .onChange(of: \.b) { _, _ in
+                Reduce { state, action in
+                    state.caculate()
+                    
+                    return .none
+                }
+            }
         Reduce(core)
     }
     
